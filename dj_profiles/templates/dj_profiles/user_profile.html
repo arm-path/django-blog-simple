@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load get_age %}
+
+{% block title %} Профиль пользователя {% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-7">
+            <h3 class="text-center">Пользователь</h3>
+            <div class="row">
+                <div class="col-3">
+                    {% if object.image %}
+                    <img id="id_image" src="{{ object.image.url }}" class="float-start img-fluid img-thumbnail"
+                         alt="...">
+                    {% else %}
+                    <img src="{% static 'dj_profiles/img/no_user.png' %}"
+                         class="float-start img-fluid img-thumbnail" alt="...">
+                    {% endif %}
+
+                </div>
+                <div class="col">
+                    <div><b>Электронный адрес:</b>
+                        <span id="id_email">{{ object.email }}</span>
+                    </div>
+                    <div><b>Отображаемое имя:</b> <span id="id_name">{{ object.name }}</span></div>
+                    <div><b>Имя:</b>
+                        <span id="id_first_name">{{ object.first_name }}</span>
+                    </div>
+                    <div><b>Фамилия:</b>
+                        <span id="id_last_name">{{ object.last_name }}</span>
+                    </div>
+                    <div><b>Дата рождения:</b>
+                        <span id="id_date_birth">{{ object.date_birth }}</span> ( {{ object.date_birth|get_age }} )
+                    </div>
+                    <div id="div_image"></div>
+                </div>
+            </div>
+            <div class="ms-3 mt-6">
+                <div>
+                    <button id="userChange" class="btn btn-primary mt-3 mb-3">Редактировать</button>
+                    <button hidden id="sendUserChange" class="btn btn-success mt-3 mb-3">Сохранить</button>
+                </div>
+
+            </div>
+            <div class="ms-3">
+                <a href="{% url 'user_password_change' %}" id="passwordChange" class="text-success">Изменить пароль</a>
+            </div>
+
+
+        </div>
+        <div class="col-md-5">
+            <h3 class="text-center">Статистика пользователя</h3>
+            <div><b>Количество статей:</b> {{object.article_set.all.count}}</div>
+            <div><b>Количество комментарий:</b> {{ object.comment_user.all.count}}</div>
+        </div>
+    </div>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.3/axios.min.js"
+        integrity="sha512-L4lHq2JI/GoKsERT8KYa72iCwfSrKYWEyaBxzJeeITM9Lub5vlTj8tufqYk056exhjo2QDEipJrg6zen/DDtoQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="module" src="{% static 'dj_profiles/js/user_change.js' %}"></script>
+{% endblock %}

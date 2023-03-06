@@ -1,0 +1,7 @@
+version: "3"
+
+services:
+  redis_dj:
+    image: redis
+    ports:
+      - "6389:6379" #  [HOST:CONTAINER]

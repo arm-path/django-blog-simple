@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'dj_articles/css/style.css' %}">
+    <title>{% block title %} {% endblock %}</title>
+</head>
+<body>
+<div class="container py-3">
+    <header>
+        <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
+            <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
+                <span class="fs-4">Django</span>
+            </a>
+            <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
+                {% url 'article_list' as article_list %}
+                <a class="me-3 py-2 text-dark text-decoration-none" href="{{ article_list }}">Главная</a>
+                <a class="me-3 py-2 text-dark text-decoration-none" href="{{ article_list }}">Статьии</a>
+                {% if request.user.is_authenticated %}
+                {% url 'administrative_panel' as administrative_panel %}
+                <a class="py-2 text-dark text-decoration-none me-2" href="{% url 'user_profile' request.user.pk %}">
+                    Профиль
+                </a>
+                <a class="me-3 py-2 text-dark text-decoration-none" href="{{ administrative_panel }}">
+                    Административная панель
+                </a>
+                <a class="py-2 text-dark text-decoration-none" href="{% url 'user_logout' %}">Выход</a>
+                {% else %}
+                {% url 'user_registration' as user_registration %}
+                <a class="py-2 me-3 text-dark text-decoration-none" href="{{ user_registration }}">Регистрация</a>
+                {% url 'user_authentication' as user_authentication %}
+                <a class="py-2 text-dark text-decoration-none" href="{{ user_authentication }}">Авторизация</a>
+                {% endif %}
+
+            </nav>
+        </div>
+    </header>
+    {% block content %}
+    {% endblock %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

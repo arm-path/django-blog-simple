@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %} Статья: {{ object.title }} {% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        {% if object.image %}
+        <div class="col-5">
+            <img src="{{ object.image.url }}" class=" rounded float-start img-fluid img-thumbnail" alt="...">
+        </div>
+        {% endif %}
+        <div class="col">
+            <h3>{{ object.title }}</h3>
+            <div><b>Категория:</b> <a href="" class="link-success"> {{ object.category.title }}</a></div>
+            <div><b>Дата создания:</b> {{ object.created }}</div>
+            <div><b>Дата обновления:</b> {{ object.updated }}</div>
+            <div><b>Теги: </b>
+                {% for tag in object.tags.all %}
+                <a href="#" class="link-success">{{ tag }}</a>
+                {% endfor %}
+            </div>
+            <div><b>Автор статьии: </b> <a href="" class="link-primary">{{ object.author.username }}</a></div>
+            <div><b>Популярность:</b><span id="reputationCount"> {{ object.reputation.count }} </span></div>
+            <div>
+                {% if request.user in object.reputation.all %}
+                <b>Оценить: </b>
+                <i id="reputationAdd" class="bi bi-star-fill"></i>
+                {% else %}
+                <b>Оценить: </b>
+                <button id="reputationAdd" class="btn-star" data-url="{% url 'article_reputation' object.slug %}">
+                    <i class="bi bi-star"></i>
+                </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-9">
+        {{ object.text }}
+    </div>
+        {% include 'dj_articles/article_detail_comments.html' %}
+</div>
+
+
+{% endblock %}

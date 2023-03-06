@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %} Регистрация пользователя {% endblock %}
+{% block content %}
+<div class="container">
+    <div class="col-4">
+        <h3 class="text-center mb-3">Регистрация пользователя</h3>
+        <form id="user-registration" action="" method="POST">
+            {% csrf_token %}
+
+            {{ form }}
+
+            <div class="d-grid gap-2">
+                <button form="user-registration" class="btn btn-success">Регистрация</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} {{ title }} {% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-between mb-3">
+        <div class="col-4">
+            <a href="{% url 'article_create' %}" class="btn btn-success text-right"> Добавить статью </a>
+        </div>
+        <div class="col-4">
+            <form class="d-flex">
+                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasExample">
+                    Фильтры
+                </button>
+                <input id="searchInput" class="form-control me-2 ms-3" style="width: 13em;" placeholder="Поиск">
+                <button id="searchButton" class="btn btn-outline-success" type="button">Поиск</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title text-center">Фильтрация и поиск статей</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div id="ArticleFilter">
+                <h5>Категории</h5>
+                {% for category in categories %}
+                <div class="form-check">
+                    <input class="form-check-input category-filter" type="checkbox" id="cat-{{ category.pk }}"
+                           name="category" value="{{category.pk}}">
+                    <label class="form-check-label" for="cat-{{ category.pk }}">{{ category }}</label>
+                </div>
+                {% endfor %}
+                <h5>Теги</h5>
+                {% for tag in tags %}
+                <div class="form-check">
+                    <input class="form-check-input tag-filter" type="checkbox" id="tag-{{ tag.pk }}"
+                           name="tag" value="{{ tag.pk }}">
+                    <label class="form-check-label" for="tag-{{ tag.pk }}">{{ tag }}</label>
+                </div>
+                {% endfor %}
+                <button id="articleFilterSelect" type="button" class="btn btn-success mt-2 mb-3">Применить
+                </button>
+            </div>
+        </div>
+    </div>
+    {% include 'dj_articles/include/messages.html' %}
+    <h4 class="text-center">Список статей
+        <span class="badge rounded-pill text-bg-dark">{{paginator.count}}</span>
+    </h4>
+    <table class="container table">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Название</th>
+            <th scope="col">Дата создания</th>
+            <th scope="col">Дата обновления</th>
+            <th scope="col">Перейти</th>
+            <th scope="col">Обновление</th>
+            <th scope="col">Удаление</th>
+        </tr>
+        </thead>
+        <tbody id="articlesList">
+        {% for object in object_list %}
+        <tr>
+            <th scope="row">{{ object.pk }}</th>
+            <td>{{ object.title }}</td>
+            <td>{{ object.created|date:"j F Y" }} г.</td>
+            <td>{{ object.updated|date:"j F Y" }} г.</td>
+            <td><a class="btn btn-success btn-sm" href="{{ object.get_absolute_url }}">Посмотреть</a></td>
+            <td><a class="btn btn-primary btn-sm" href="{% url 'article_update' object.slug%}">Изменить</a></td>
+            <form id="form-{{object.id}}" action="{% url 'article_delete' object.slug %}" method="POST">
+                {% csrf_token %}
+            </form>
+            <td>
+                <button form="form-{{object.id}}" type="submit" class="btn btn-danger btn-sm">Удалить</button>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="d-grid gap-2 col-6 mx-auto">
+        <button id="moreArticles" data-show="{{page_obj.has_next}}" data-page="" class="btn btn-secondary">
+            Показать еще
+        </button>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script type="module" src="{% static 'dj_articles/js/administrative-panel.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% load static %}
+<div class="container">
+    <h4 class="mt-3">Комментарии ( {{ article.comments.count }} ):</h4>
+    <div class="col-9">
+        <!--    Send Comment    -->
+        {% if request.user.is_authenticated %}
+        {% include 'dj_articles/include/messages.html' %}
+        <form id="form-comment" action="" method="POST">
+            {% csrf_token %}
+            {{ form }}
+            <div class=" col d-grid gap-2 d-md-flex justify-content-md-end">
+                <button form="form-comment" class="btn btn-success mt-2">Отправить</button>
+            </div>
+        </form>
+        {% endif %}
+        <!--    End / Send Comment    -->
+        <div id="commentList" class="mt-3">
+            {% for comment in comments %}
+            <div class="mb-2">
+                <div>
+                    <b class="text-primary">{{ comment.user.name }}</b>
+                    <span class="text-secondary">{{ comment.created|date:"j F Y" }}</span>
+                </div>
+                {% if object.author == request.user %}
+                <div>
+                    <b>Статус: </b>
+                    <button data-action="published" data-url="{% url 'comment_published' object.slug %}"
+                            class="btn-link-primary" value="{{ comment.pk }}">
+                        {% if comment.published %} Снять с публикации {% else %} Опубликовать {% endif %}
+                    </button>
+                </div>
+                {% endif %}
+                {% if object.author == request.user or comment.user == request.user %}
+                <div>
+                    <b>Действие:</b>
+                    <button data-action="deleted" data-url="{% url 'comment_delete' object.slug %}"
+                            class="btn-link-error" value="{{ comment.pk }}">Удалить
+                    </button>
+                </div>
+                {% endif %}
+                {{ comment.text }}
+            </div>
+            <hr/>
+            {% endfor %}
+        </div>
+
+        <div class="d-grid gap-2 col-6 mx-auto">
+            <button id="moreComment" data-show="{{ comments.has_next }}" data-url="{% url 'comment_more' object.slug %}"
+                    data-page="" class="btn btn-secondary"> Еще комментарии
+            </button>
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end me-2">
+            <nav aria-label="..." class="mt-2">
+                <ul class="pagination pagination-sm">
+                    {% for page in comments.paginator.page_range %}
+                    {% if comments.number == page %}
+                    <li class="page-item"><a class="page-link active" href="#">{{ page }}</a></li>
+                    {% elif page == comments.number|add:-1 or page == comments.number|add:1 %}
+                    <li class="page-item"><a class="page-link" href="?page={{page}}">{{ page }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<script type="module" src="{% static 'dj_articles/js/comment-pagination.js' %}"></script>
+<script type="module" src="{% static 'dj_articles/js/comment-send.js' %}">
+
+</script>

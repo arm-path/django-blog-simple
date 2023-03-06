@@ -1,0 +1,26 @@
+<div class="mb-2">
+    <div>
+        <b class="text-primary">{{ comment.user.name }}</b>
+        <span class="text-secondary">{{ comment.created|date:"j F Y" }}</span>
+    </div>
+    {% if object.author == request.user %}
+    <div>
+        <b>Статус: </b>
+        <button data-action="published" data-url="{% url 'comment_published' object.slug %}"
+                class="btn-link-primary" value="{{ comment.pk }}">
+            {% if comment.published %} Снять с публикации {% else %} Опубликовать {% endif %}
+        </button>
+    </div>
+    {% endif %}
+
+    {% if object.author == request.user or comment.user == request.user %}
+    <div>
+        <b>Действие:</b>
+        <button data-action="deleted" data-url="{% url 'comment_delete' object.slug %}"
+                class="btn-link-error" value="{{ comment.pk }}">Удалить
+        </button>
+    </div>
+    {% endif %}
+    {{ comment.text }}
+</div>
+<hr/>

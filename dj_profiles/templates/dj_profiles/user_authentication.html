@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %} Авторизация пользователя {% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4 ">
+            <h3 class="text-center mb-3"> Авторизация </h3>
+            {% if messages %}
+            {% for message in messages %}
+            <div {% if message.tags %} class="alert alert-{{ message.tags }} text-center" {% endif %}>{{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            <form id="user-authentication" action="" method="POST">
+                {% csrf_token %}
+                {{ form }}
+                <div class="d-grid gap-2">
+                    <button class="btn btn-success" form="user-authentication">Авторизация</button>
+                </div>
+                <h6 class="text-center mt-3">
+                    <a class="link-primary" href="{% url 'user_password_reset' %}">Забыли пароль?</a>
+                </h6>
+            </form>
+        </div>
+        <div class="col-4"></div>
+    </div>
+</div>
+{% endblock %}
